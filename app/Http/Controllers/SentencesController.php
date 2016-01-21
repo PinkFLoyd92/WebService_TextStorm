@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
+
 
 class SentencesController extends Controller
 {
@@ -24,10 +25,11 @@ class SentencesController extends Controller
                 Storage::put('data.txt', $content_temp);
             }
             $file = Storage::disk('local')->get('data.txt');
-            $small = substr($file, 0, 100);
-            $file = substr($file,100);
+            $small = substr($file, 0, strpos($file,"\n"));
+            $file = substr($file,strpos($file,"\n")+1);
             Storage::put('data.txt', $file);
-            return $small;
+            return Response::json(array('line' => $small));
+
         }
     }
 }
